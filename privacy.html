@@ -9,10 +9,10 @@
     <style>
         :root {
             --bg: #eef2f7;
-            --card: rgba(255, 255, 255, 0.65);
+            --card: rgba(255, 255, 255, 0.68);
             --text: #172033;
             --muted: #667085;
-            --border: rgba(255, 255, 255, 0.7);
+            --border: rgba(255, 255, 255, 0.75);
             --accent: #4f46e5;
             --shadow: rgba(15, 23, 42, 0.12);
         }
@@ -81,6 +81,29 @@
             font-size: 15px;
         }
 
+        .language-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 22px;
+        }
+
+        .language-switcher button {
+            border: 1px solid rgba(79, 70, 229, 0.18);
+            background: rgba(255, 255, 255, 0.45);
+            color: var(--text);
+            padding: 9px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .language-switcher button.active {
+            background: var(--accent);
+            color: white;
+        }
+
         main {
             padding: clamp(22px, 5vw, 42px);
         }
@@ -96,7 +119,6 @@
         h2 {
             font-size: 21px;
             margin-bottom: 12px;
-            color: var(--text);
         }
 
         p {
@@ -120,15 +142,25 @@
             margin: 20px 0;
         }
 
-        .important {
-            font-weight: 700;
-        }
-
         .contact {
             padding: 22px;
             border-radius: 20px;
             background: rgba(255, 255, 255, 0.35);
             border: 1px solid var(--border);
+        }
+
+        .email-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+            padding: 10px 18px;
+            border-radius: 12px;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
         }
 
         a {
@@ -137,15 +169,15 @@
             font-weight: 600;
         }
 
-        a:hover {
-            text-decoration: underline;
-        }
-
         footer {
             text-align: center;
             color: var(--muted);
             font-size: 14px;
             padding: 25px 10px;
+        }
+
+        .hidden {
+            display: none;
         }
 
         @media (max-width: 600px) {
@@ -173,12 +205,17 @@
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg: #0b1020;
-                --card: rgba(20, 27, 45, 0.72);
+                --card: rgba(20, 27, 45, 0.75);
                 --text: #f1f5f9;
                 --muted: #a8b2c3;
                 --border: rgba(255, 255, 255, 0.1);
-                --shadow: rgba(0, 0, 0, 0.35);
                 --accent: #818cf8;
+                --shadow: rgba(0, 0, 0, 0.35);
+            }
+
+            .language-switcher button {
+                background: rgba(255, 255, 255, 0.06);
+                color: var(--text);
             }
 
             .contact {
@@ -190,23 +227,38 @@
 
 <body>
 
-    <div class="container">
+<div class="container">
 
-        <header class="glass">
-            <div class="logo">LT</div>
+    <header class="glass">
 
-            <h1>গোপনীয়তা নীতি</h1>
+        <div class="logo">LT</div>
 
-            <p class="subtitle">
-                Life Time অ্যাপ
-            </p>
+        <h1 id="pageTitle">গোপনীয়তা নীতি</h1>
 
-            <p class="subtitle">
-                সর্বশেষ আপডেট: ২৩ আগস্ট ২০২৬
-            </p>
-        </header>
+        <p class="subtitle" id="appName">
+            Life Time অ্যাপ
+        </p>
 
-        <main class="glass">
+        <p class="subtitle">
+            <span id="updatedLabel">সর্বশেষ আপডেট:</span>
+            <span>২৩ আগস্ট ২০২৬</span>
+        </p>
+
+        <div class="language-switcher">
+            <button id="bnButton" class="active" onclick="setLanguage('bn')">
+                বাংলা
+            </button>
+
+            <button id="enButton" onclick="setLanguage('en')">
+                English
+            </button>
+        </div>
+
+    </header>
+
+    <main class="glass">
+
+        <div id="banglaContent">
 
             <section>
                 <h2>১. এই গোপনীয়তা নীতি সম্পর্কে</h2>
@@ -230,13 +282,11 @@
                 <p>
                     ব্যবহারকারী নিজের জন্য একটি আনুমানিক জীবনকাল নির্বাচন করতে পারবেন।
                     সেই নির্বাচিত সময়ের ভিত্তিতে অ্যাপটি বয়স, অতিবাহিত সময়,
-                    আনুমানিক অবশিষ্ট সময় এবং শতাংশ হিসাব করে দেখাবে।
+                    আনুমানিক অবশিষ্ট সময় এবং শতাংশ হিসাব করে দেখায়।
                 </p>
 
                 <div class="notice">
-                    <p class="important">
-                        গুরুত্বপূর্ণ:
-                    </p>
+                    <p><strong>গুরুত্বপূর্ণ:</strong></p>
 
                     <p>
                         অ্যাপটি কোনো ব্যক্তির প্রকৃত জীবনকাল, মৃত্যুর সময় বা ভবিষ্যৎ
@@ -249,9 +299,7 @@
             <section>
                 <h2>৩. আমরা কোন তথ্য সংরক্ষণ করি</h2>
 
-                <p>
-                    ব্যবহারকারী চাইলে অ্যাপের মধ্যে নিচের তথ্য প্রদান করতে পারেন:
-                </p>
+                <p>ব্যবহারকারী চাইলে অ্যাপের মধ্যে নিচের তথ্য প্রদান করতে পারেন:</p>
 
                 <ul>
                     <li>নাম</li>
@@ -327,10 +375,6 @@
                     এই Reminder ডিভাইসের স্থানীয় Notification ব্যবস্থা ব্যবহার করে
                     পরিচালিত হয় এবং এর জন্য Internet Connection প্রয়োজন হয় না।
                 </p>
-
-                <p>
-                    ব্যবহারকারী যেকোনো সময় Reminder বন্ধ করতে পারবেন।
-                </p>
             </section>
 
             <section>
@@ -348,13 +392,8 @@
 
                 <p>
                     Push Notification পরিচালনার জন্য সংশ্লিষ্ট Service Provider
-                    তাদের নিজস্ব প্রযুক্তিগত প্রক্রিয়া অনুযায়ী সীমিত
-                    Device বা Notification সম্পর্কিত তথ্য প্রক্রিয়া করতে পারে।
-                </p>
-
-                <p>
-                    তৃতীয় পক্ষের পরিষেবার নিজস্ব Privacy Policy তাদের
-                    তথ্য ব্যবহারের ক্ষেত্রে প্রযোজ্য হতে পারে।
+                    তাদের নিজস্ব প্রযুক্তিগত প্রক্রিয়া অনুযায়ী সীমিত Device
+                    অথবা Notification সম্পর্কিত তথ্য প্রক্রিয়া করতে পারে।
                 </p>
             </section>
 
@@ -382,18 +421,14 @@
 
                 <p>
                     অ্যাপের মূল ফিচারগুলো Offline-first পদ্ধতিতে তৈরি করা হয়েছে।
-                </p>
-
-                <p>
                     Internet Connection ছাড়াই ব্যবহারকারী Age Calculation,
-                    Life Progress, Profile, Notes, Goals, Achievements এবং
-                    অন্যান্য মূল ফিচার ব্যবহার করতে পারবেন।
+                    Life Progress, Profile, Notes, Goals এবং Achievements ব্যবহার
+                    করতে পারবেন।
                 </p>
 
                 <p>
-                    Online Push Notification অথবা ভবিষ্যতে যুক্ত হওয়া
-                    কোনো Online Service-এর জন্য Internet Connection প্রয়োজন
-                    হতে পারে।
+                    Online Push Notification অথবা ভবিষ্যতে যুক্ত হওয়া কোনো
+                    Online Service-এর জন্য Internet Connection প্রয়োজন হতে পারে।
                 </p>
             </section>
 
@@ -409,11 +444,6 @@
                     তৃতীয় পক্ষের পরিষেবা ব্যবহারের ক্ষেত্রে তাদের নিজস্ব
                     Privacy Policy এবং Terms প্রযোজ্য হতে পারে।
                 </p>
-
-                <p>
-                    আমরা প্রয়োজনের অতিরিক্ত ব্যক্তিগত তথ্য তৃতীয় পক্ষের কাছে
-                    পাঠানোর উদ্দেশ্যে অ্যাপটি তৈরি করি না।
-                </p>
             </section>
 
             <section>
@@ -426,13 +456,9 @@
 
                 <p>
                     অ্যাপের মূল ব্যক্তিগত তথ্য স্থানীয়ভাবে সংরক্ষিত থাকে।
-                </p>
-
-                <p>
-                    তবে Online Push Notification-এর মতো নির্দিষ্ট Online Service
-                    ব্যবহারের ক্ষেত্রে সেই Service পরিচালনার জন্য প্রয়োজনীয়
-                    সীমিত প্রযুক্তিগত তথ্য সংশ্লিষ্ট Service Provider-এর মাধ্যমে
-                    প্রক্রিয়া হতে পারে।
+                    নির্দিষ্ট Online Service ব্যবহারের ক্ষেত্রে সেই Service
+                    পরিচালনার জন্য প্রয়োজনীয় সীমিত প্রযুক্তিগত তথ্য সংশ্লিষ্ট
+                    Service Provider-এর মাধ্যমে প্রক্রিয়া হতে পারে।
                 </p>
             </section>
 
@@ -448,11 +474,6 @@
                 <p>
                     তবে কোনো ডিজিটাল Storage বা Software System সম্পূর্ণ
                     ঝুঁকিমুক্ত বলে নিশ্চয়তা দেওয়া সম্ভব নয়।
-                </p>
-
-                <p>
-                    ব্যবহারকারীর নিজের ডিভাইসের Screen Lock এবং Operating System
-                    Security বজায় রাখাও গুরুত্বপূর্ণ।
                 </p>
             </section>
 
@@ -470,12 +491,6 @@
                     Android-এর আচরণ এবং ব্যবহৃত Storage ব্যবস্থার ওপর
                     নির্ভর করে মুছে যেতে পারে।
                 </p>
-
-                <p>
-                    কোনো Online Third-Party Service-এর মাধ্যমে সংরক্ষিত
-                    প্রযুক্তিগত তথ্য থাকলে তা সংশ্লিষ্ট Service Provider-এর
-                    নিজস্ব Data Retention Policy অনুযায়ী পরিচালিত হতে পারে।
-                </p>
             </section>
 
             <section>
@@ -483,17 +498,8 @@
 
                 <p>
                     অ্যাপটি সাধারণ ব্যবহারকারীদের জন্য তৈরি করা হয়েছে।
-                </p>
-
-                <p>
                     আমরা জেনে-শুনে অপ্রয়োজনীয়ভাবে শিশুদের ব্যক্তিগত তথ্য
                     সংগ্রহ করার উদ্দেশ্যে অ্যাপটি তৈরি করি না।
-                </p>
-
-                <p>
-                    কোনো অভিভাবক বা আইনগত অভিভাবক মনে করলে যে কোনো শিশু
-                    অনুপযুক্তভাবে ব্যক্তিগত তথ্য প্রদান করেছে, তাহলে তারা
-                    আমাদের সঙ্গে যোগাযোগ করতে পারেন।
                 </p>
             </section>
 
@@ -502,9 +508,6 @@
 
                 <p>
                     প্রয়োজন হলে আমরা এই Privacy Policy পরিবর্তন বা আপডেট করতে পারি।
-                </p>
-
-                <p>
                     পরিবর্তন করা হলে এই পৃষ্ঠায় নতুন সর্বশেষ আপডেটের তারিখ
                     প্রকাশ করা হবে।
                 </p>
@@ -514,26 +517,23 @@
                 <h2>১৭. যোগাযোগ</h2>
 
                 <div class="contact">
-                    <p>
-                        Privacy Policy, Data Privacy অথবা অ্যাপ সম্পর্কিত
-                        কোনো প্রশ্ন থাকলে নিচের যোগাযোগের মাধ্যমে আমাদের
-                        সঙ্গে যোগাযোগ করতে পারেন।
+                    <p><strong>Developer:</strong><br>
+                        Muhammed Omor
                     </p>
 
-                    <p>
-                        <strong>Developer / Organization:</strong><br>
-                        [আপনার নাম বা প্রতিষ্ঠানের নাম]
-                    </p>
+                    <p><strong>Contact Email:</strong></p>
 
-                    <p>
-                        <strong>Email:</strong><br>
-                        [আপনার ইমেইল]
-                    </p>
+                    <a class="email-button"
+                       href="mailto:mdomorfaruk2r@gmail.com">
+                        Contact Developer
+                    </a>
 
-                    <p>
+                    <p style="margin-top: 18px;">
                         <strong>Website:</strong><br>
-                        <a href="https://example.app" target="_blank" rel="noopener">
-                            https://example.app
+                        <a href="https://halalcodes.github.io/Life-Time/"
+                           target="_blank"
+                           rel="noopener">
+                            https://halalcodes.github.io/Life-Time/
                         </a>
                     </p>
                 </div>
@@ -556,11 +556,6 @@
                         অ্যাপের কোনো হিসাবকে প্রকৃত জীবনকাল, মৃত্যুর সময় বা
                         ভবিষ্যৎ সম্পর্কে নিশ্চিত পূর্বাভাস হিসেবে বিবেচনা করা উচিত নয়।
                     </p>
-
-                    <p>
-                        এই অ্যাপের মূল উদ্দেশ্য হলো ব্যবহারকারীকে তার বর্তমান
-                        সময়ের মূল্য সম্পর্কে সচেতন হতে সহায়তা করা।
-                    </p>
                 </div>
             </section>
 
@@ -574,13 +569,405 @@
                 </p>
             </section>
 
-        </main>
+        </div>
 
-        <footer>
-            © 2026 Life Time. All rights reserved.
-        </footer>
 
-    </div>
+        <div id="englishContent" class="hidden">
+
+            <section>
+                <h2>1. About This Privacy Policy</h2>
+
+                <p>
+                    This Privacy Policy explains how information is stored,
+                    used and protected when you use the Life Time application.
+                </p>
+
+                <p>
+                    Life Time is a time and life awareness application designed
+                    to help users understand the value of time and become more
+                    aware of the passage of life.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. Lifespan Calculation</h2>
+
+                <p>
+                    Users can select an estimated lifespan for calculation
+                    and visualization purposes. The application uses this
+                    selected value to calculate age, elapsed time, estimated
+                    remaining time and percentages.
+                </p>
+
+                <div class="notice">
+                    <p><strong>Important:</strong></p>
+
+                    <p>
+                        Life Time does not predict a person's actual lifespan,
+                        date of death or future life expectancy. The selected
+                        lifespan is only a personal estimate used for
+                        calculations and visualization.
+                    </p>
+                </div>
+            </section>
+
+            <section>
+                <h2>3. Information We Store</h2>
+
+                <p>Users may optionally provide:</p>
+
+                <ul>
+                    <li>Name</li>
+                    <li>Profile picture</li>
+                    <li>Date of birth</li>
+                    <li>Bio</li>
+                    <li>Biodata</li>
+                    <li>Selected estimated lifespan</li>
+                    <li>Personal goals</li>
+                    <li>Personal achievements</li>
+                    <li>Personal notes</li>
+                    <li>Reminder and application settings</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Local Data Storage</h2>
+
+                <p>
+                    Life Time is designed as an offline-first application.
+                    Core personal information is stored locally on the user's
+                    device.
+                </p>
+
+                <p>
+                    IndexedDB is used for structured local data storage.
+                </p>
+
+                <p>
+                    Profile information, notes, goals, achievements and other
+                    core personal data do not need to be sent to an online
+                    server for normal application functionality.
+                </p>
+            </section>
+
+            <section>
+                <h2>5. Profile Pictures</h2>
+
+                <p>
+                    Users may optionally add a profile picture.
+                    The profile picture is stored locally on the device.
+                </p>
+
+                <p>
+                    The profile picture does not need to be uploaded to a
+                    third-party server for core application functionality.
+                </p>
+            </section>
+
+            <section>
+                <h2>6. Notes, Goals and Achievements</h2>
+
+                <p>
+                    Personal notes, goals and achievements are stored locally
+                    on the user's device.
+                </p>
+
+                <p>
+                    They are intended for personal use and are not publicly
+                    displayed to other users as part of the normal application.
+                </p>
+            </section>
+
+            <section>
+                <h2>7. Offline Notifications</h2>
+
+                <p>
+                    Users may enable local reminders every 5 days or every
+                    10 days.
+                </p>
+
+                <p>
+                    Local reminders are handled through the device's local
+                    notification system and do not require an internet connection.
+                </p>
+            </section>
+
+            <section>
+                <h2>8. Online Push Notifications</h2>
+
+                <p>
+                    The application administrator may send online push
+                    notifications to users when necessary.
+                </p>
+
+                <p>
+                    OneSignal or a similar third-party push notification
+                    service may be used for this functionality.
+                </p>
+
+                <p>
+                    The relevant service provider may process limited device
+                    or notification-related technical information according
+                    to its own technical processes.
+                </p>
+            </section>
+
+            <section>
+                <h2>9. Notification Permission</h2>
+
+                <p>
+                    Notification functionality is subject to the permissions
+                    required by the Android operating system.
+                </p>
+
+                <p>
+                    If notification permission is denied, the application
+                    may not be able to deliver notifications.
+                </p>
+
+                <p>
+                    The application does not attempt to secretly bypass or
+                    circumvent Android permission systems.
+                </p>
+            </section>
+
+            <section>
+                <h2>10. Internet Usage</h2>
+
+                <p>
+                    The core features of the application are designed to work
+                    offline. Users can use age calculation, life progress,
+                    profile, notes, goals and achievements without an internet
+                    connection.
+                </p>
+
+                <p>
+                    Online push notifications and future online services may
+                    require an internet connection.
+                </p>
+            </section>
+
+            <section>
+                <h2>11. Third-Party Services</h2>
+
+                <p>
+                    OneSignal or another trusted third-party service may be
+                    used for specific online notification functionality.
+                </p>
+
+                <p>
+                    Third-party services may have their own Privacy Policies
+                    and Terms that apply to their services.
+                </p>
+            </section>
+
+            <section>
+                <h2>12. Data Sharing</h2>
+
+                <p>
+                    We do not sell, rent or commercially disclose users'
+                    personal information.
+                </p>
+
+                <p>
+                    Core personal data is stored locally. When a specific
+                    online service is used, limited technical information
+                    required to operate that service may be processed by
+                    the relevant service provider.
+                </p>
+            </section>
+
+            <section>
+                <h2>13. Data Security</h2>
+
+                <p>
+                    We use appropriate software and local data storage
+                    practices to help protect user information.
+                </p>
+
+                <p>
+                    However, no digital storage or software system can be
+                    guaranteed to be completely secure or risk-free.
+                </p>
+            </section>
+
+            <section>
+                <h2>14. Data Deletion</h2>
+
+                <p>
+                    Users can delete their notes, goals, achievements and
+                    profile information through the available deletion
+                    features within the application.
+                </p>
+
+                <p>
+                    When the application is uninstalled, locally stored
+                    application data may be removed depending on Android
+                    behavior and the storage mechanisms used by the application.
+                </p>
+            </section>
+
+            <section>
+                <h2>15. Children's Privacy</h2>
+
+                <p>
+                    The application is designed for general users.
+                    We do not intentionally collect unnecessary personal
+                    information from children.
+                </p>
+            </section>
+
+            <section>
+                <h2>16. Changes to This Privacy Policy</h2>
+
+                <p>
+                    We may update or modify this Privacy Policy when necessary.
+                    Any changes will be reflected on this page with an updated
+                    revision date.
+                </p>
+            </section>
+
+            <section>
+                <h2>17. Contact</h2>
+
+                <div class="contact">
+
+                    <p>
+                        <strong>Developer:</strong><br>
+                        Muhammed Omor
+                    </p>
+
+                    <p>
+                        <strong>Contact Email:</strong>
+                    </p>
+
+                    <a class="email-button"
+                       href="mailto:mdomorfaruk2r@gmail.com">
+                        Contact Developer
+                    </a>
+
+                    <p style="margin-top: 18px;">
+                        <strong>Website:</strong><br>
+
+                        <a href="https://halalcodes.github.io/Life-Time/"
+                           target="_blank"
+                           rel="noopener">
+                            https://halalcodes.github.io/Life-Time/
+                        </a>
+                    </p>
+
+                </div>
+            </section>
+
+            <section>
+                <h2>18. Important Disclaimer</h2>
+
+                <div class="notice">
+
+                    <p>
+                        Life Time is a calculation and visualization tool
+                        designed to encourage awareness of time and life.
+                    </p>
+
+                    <p>
+                        The estimated lifespan displayed by the application
+                        is selected by the user.
+                    </p>
+
+                    <p>
+                        No calculation provided by the application should be
+                        interpreted as a prediction or guarantee of actual
+                        lifespan, date of death or future life expectancy.
+                    </p>
+
+                </div>
+            </section>
+
+            <section>
+                <h2>19. Consent</h2>
+
+                <p>
+                    By using the Life Time application, you acknowledge that
+                    you have read this Privacy Policy and understand the
+                    information practices described in it.
+                </p>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <footer>
+        © 2026 Life Time. All rights reserved.
+    </footer>
+
+</div>
+
+
+<script>
+    function setLanguage(language) {
+
+        const bangla = document.getElementById("banglaContent");
+        const english = document.getElementById("englishContent");
+
+        const bnButton = document.getElementById("bnButton");
+        const enButton = document.getElementById("enButton");
+
+        const title = document.getElementById("pageTitle");
+        const appName = document.getElementById("appName");
+        const updatedLabel = document.getElementById("updatedLabel");
+
+        if (language === "en") {
+
+            bangla.classList.add("hidden");
+            english.classList.remove("hidden");
+
+            enButton.classList.add("active");
+            bnButton.classList.remove("active");
+
+            title.textContent = "Privacy Policy";
+            appName.textContent = "Life Time App";
+            updatedLabel.textContent = "Last Updated:";
+
+            document.documentElement.lang = "en";
+
+        } else {
+
+            english.classList.add("hidden");
+            bangla.classList.remove("hidden");
+
+            bnButton.classList.add("active");
+            enButton.classList.remove("active");
+
+            title.textContent = "গোপনীয়তা নীতি";
+            appName.textContent = "Life Time অ্যাপ";
+            updatedLabel.textContent = "সর্বশেষ আপডেট:";
+
+            document.documentElement.lang = "bn";
+        }
+    }
+
+    /*
+     * Bangla is the default language.
+     * The selected language is also remembered locally.
+     */
+
+    const savedLanguage = localStorage.getItem("privacy_language");
+
+    if (savedLanguage === "en") {
+        setLanguage("en");
+    } else {
+        setLanguage("bn");
+    }
+
+    document.querySelectorAll(".language-switcher button").forEach(button => {
+        button.addEventListener("click", function () {
+            const language = this.id === "enButton" ? "en" : "bn";
+            localStorage.setItem("privacy_language", language);
+        });
+    });
+</script>
 
 </body>
 </html>
