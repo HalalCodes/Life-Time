@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f7fb">
+<title>Data Burner Pro — Network Tester</title>
+<style>
+:root{
+  --bg:#eef3f9;--surface:rgba(255,255,255,.62);--surface2:rgba(255,255,255,.78);
+  --text:#152033;--muted:#667085;--line:rgba(20,35,60,.11);
+  --primary:#5b5cf0;--cyan:#13a8d8;--success:#17a673;--danger:#e24d68;
+  --shadow:0 22px 60px rgba(38,56,88,.14);--radius:24px;
+}
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--bg)}
+body{
+ margin:0;min-height:100vh;color:var(--text);
+ font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ background:
+ radial-gradient(circle at 0% 0%,rgba(91,92,240,.18),transparent 31rem),
+ radial-gradient(circle at 100% 5%,rgba(19,168,216,.14),transparent 28rem),
+ linear-gradient(135deg,#f8fbff,#edf2f8);
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{width:min(1160px,92vw);margin:auto;padding:25px 0 42px}
+header{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{
+ width:48px;height:48px;border-radius:16px;display:grid;place-items:center;
+ color:white;font-weight:900;font-size:22px;
+ background:linear-gradient(135deg,var(--primary),var(--cyan));
+ box-shadow:0 12px 28px rgba(91,92,240,.25)
+}
+h1{font-size:clamp(23px,4vw,34px);line-height:1;margin:0;letter-spacing:-.04em}
+.subtitle{margin:5px 0 0;color:var(--muted);font-size:12px}
+.status{
+ display:flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--line);
+ background:rgba(255,255,255,.55);backdrop-filter:blur(15px);border-radius:99px;
+ color:var(--muted);font-size:12px;white-space:nowrap
+}
+.dot{width:8px;height:8px;border-radius:50%;background:#9aa5b5}
+.running .dot{background:var(--success);box-shadow:0 0 0 6px rgba(23,166,115,.12);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{transform:scale(.72);opacity:.5}}
+.grid{display:grid;grid-template-columns:1.12fr .88fr;gap:18px}
+.card{
+ background:var(--surface);border:1px solid rgba(255,255,255,.78);
+ border-radius:var(--radius);box-shadow:var(--shadow);
+ backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);padding:22px
+}
+.card h2{font-size:14px;margin:0 0 16px}
+.target{display:grid;grid-template-columns:1fr 120px;gap:9px}
+input,select{
+ width:100%;border:1px solid var(--line);border-radius:14px;padding:13px 14px;
+ color:var(--text);background:rgba(255,255,255,.62);outline:none
+}
+input:focus,select:focus{border-color:rgba(91,92,240,.55);box-shadow:0 0 0 3px rgba(91,92,240,.10)}
+.presets{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 18px}
+.preset,.mini{
+ border:1px solid var(--line);background:rgba(255,255,255,.48);color:var(--text);
+ padding:8px 11px;border-radius:11px;font-size:12px;transition:.18s
+}
+button:hover{transform:translateY(-1px)}
+.controls{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:9px}
+.btn{border:0;border-radius:14px;padding:13px;font-weight:800;transition:.18s}
+.start{color:white;background:linear-gradient(135deg,var(--primary),#7379ff);box-shadow:0 10px 22px rgba(91,92,240,.20)}
+.pause{color:#875e13;background:rgba(255,190,75,.18);border:1px solid rgba(220,160,30,.25)}
+.reset{color:#b63852;background:rgba(226,77,104,.09);border:1px solid rgba(226,77,104,.18)}
+.btn:disabled{opacity:.42;cursor:not-allowed;transform:none}
+.progress{margin-top:24px}
+.progressHead{display:flex;align-items:end;justify-content:space-between;margin-bottom:9px}
+.percent{font-size:37px;font-weight:900;letter-spacing:-.06em}
+.transfer{color:var(--muted);font-size:12px}
+.track{height:12px;background:rgba(40,60,90,.08);border-radius:99px;overflow:hidden;border:1px solid rgba(20,35,60,.04)}
+.fill{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--cyan));border-radius:inherit;transition:width .15s linear}
+.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:13px}
+.metric{padding:14px;border-radius:17px;background:var(--surface2);border:1px solid var(--line)}
+.label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.value{font-size:22px;font-weight:850;margin-top:5px;letter-spacing:-.03em}
+.value small{font-size:11px;color:var(--muted)}
+.form{display:grid;gap:11px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fieldLabel{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:block}
+.check{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:11px}
+.check input{width:auto;accent-color:var(--primary)}
+.log{
+ height:155px;overflow:auto;margin-top:14px;padding:11px;border-radius:14px;
+ background:rgba(244,247,251,.72);border:1px solid var(--line);
+ color:#647089;font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace
+}
+.log div{padding:2px 0;border-bottom:1px solid rgba(20,35,60,.05)}
+.info{margin-top:13px;color:var(--muted);font-size:11px;line-height:1.55}
+.notice{
+ margin-top:11px;padding:11px 12px;border-radius:13px;
+ background:rgba(255,190,75,.10);border:1px solid rgba(220,160,30,.17);
+ color:#775817;font-size:11px;line-height:1.5
+}
+footer{text-align:center;color:#8994a6;font-size:10px;margin-top:16px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+@media(max-width:520px){
+ .app{width:94vw;padding-top:16px}.card{padding:17px;border-radius:20px}
+ header{align-items:flex-start}.status{font-size:10px;padding:7px 9px}
+ .logo{width:43px;height:43px}.target{grid-template-columns:1fr 90px}
+ .controls{grid-template-columns:1fr 1fr}.start{grid-column:1/-1}
+ .metrics{grid-template-columns:1fr 1fr}.value{font-size:19px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="brand">
+  <div class="logo">↯</div>
+  <div><h1>Data Burner Pro</h1><p class="subtitle">Professional network throughput tester</p></div>
+ </div>
+ <div id="status" class="status"><span class="dot"></span><span id="statusText">Ready</span></div>
+</header>
+
+<div class="grid">
+<section class="card">
+ <h2>Data Target</h2>
+ <div class="target">
+  <input id="amount" type="number" min="1" step="1" value="500">
+  <select id="unit"><option value="MB">MB</option><option value="GB">GB</option></select>
+ </div>
+ <div class="presets">
+  <button class="preset" data-v="500" data-u="MB">500 MB</button>
+  <button class="preset" data-v="1" data-u="GB">1 GB</button>
+  <button class="preset" data-v="2" data-u="GB">2 GB</button>
+  <button class="preset" data-v="5" data-u="GB">5 GB</button>
+ </div>
+ <div class="controls">
+  <button id="start" class="btn start">Start Test</button>
+  <button id="pause" class="btn pause" disabled>Pause</button>
+  <button id="reset" class="btn reset">Reset</button>
+ </div>
+
+ <div class="progress">
+  <div class="progressHead"><div id="percent" class="percent">0%</div><div class="transfer"><span id="done">0 MB</span> / <span id="goal">500 MB</span></div></div>
+  <div class="track"><div id="fill" class="fill"></div></div>
+ </div>
+
+ <div class="metrics">
+  <div class="metric"><div class="label">Live Speed</div><div id="mbps" class="value">0 <small>Mbps</small></div></div>
+  <div class="metric"><div class="label">Throughput</div><div id="mbs" class="value">0 <small>MB/s</small></div></div>
+  <div class="metric"><div class="label">Peak Speed</div><div id="peak" class="value">0 <small>Mbps</small></div></div>
+  <div class="metric"><div class="label">ETA</div><div id="eta" class="value">—</div></div>
+ </div>
+</section>
+
+<aside class="card">
+ <h2>Performance Configuration</h2>
+ <div class="form">
+  <div>
+   <label class="fieldLabel">Authorized test endpoint</label>
+   <input id="endpoint" value="https://speed.cloudflare.com/__down?bytes=25000000" spellcheck="false">
+  </div>
+  <div class="row">
+   <div><label class="fieldLabel">Parallel connections</label>
+    <select id="threads"><option>2</option><option selected>4</option><option>6</option><option>8</option></select>
+   </div>
+   <div><label class="fieldLabel">Request size</label>
+    <select id="size"><option value="10">10 MB</option><option value="25" selected>25 MB</option><option value="50">50 MB</option></select>
+   </div>
+  </div>
+  <label class="check"><input id="wake" type="checkbox" checked> Keep screen awake while testing</label>
+ </div>
+
+ <p class="info">The response is read through a <b>ReadableStream</b> and immediately discarded. The app does not intentionally save the downloaded payload to disk.</p>
+ <div class="notice">Use this only with a speed-test endpoint you own or are authorized to test. Actual speed can be limited by the browser, server, CDN, device or ISP.</div>
+ <div id="log" class="log"></div>
+</aside>
+</div>
+<footer>Data Burner Pro • Single-file HTML • Light Glass UI</footer>
+</div>
+
+<script>
+(() => {
+ "use strict";
+ const $=id=>document.getElementById(id), MB=1024*1024, GB=1024*MB;
+ const amount=$("amount"),unit=$("unit"),endpoint=$("endpoint"),threads=$("threads"),size=$("size");
+ const start=$("start"),pause=$("pause"),reset=$("reset"),status=$("status"),statusText=$("statusText");
+ const fill=$("fill"),percent=$("percent"),done=$("done"),goal=$("goal"),mbps=$("mbps"),mbs=$("mbs"),peak=$("peak"),eta=$("eta"),logBox=$("log");
+ let target=500*MB,transferred=0,running=false,paused=false,gen=0,active=0,peakBps=0,lastBytes=0,lastTime=0,wake=null;
+ const controllers=new Set();
+
+ function log(s){
+  const d=document.createElement("div");d.textContent="["+new Date().toLocaleTimeString()+"] "+s;
+  logBox.appendChild(d);while(logBox.children.length>100)logBox.firstChild.remove();logBox.scrollTop=logBox.scrollHeight;
+ }
+ function targetBytes(){
+  return Math.max(1,Number(amount.value)||1)*(unit.value==="GB"?GB:MB);
+ }
+ function fmt(b){
+  if(b>=GB)return (b/GB).toFixed(b>=10*GB?1:2)+" GB";
+  return (b/MB).toFixed(b>=100*MB?0:1)+" MB";
+ }
+ function refresh(){
+  target=targetBytes();goal.textContent=fmt(target);
+  const p=Math.min(100,transferred/target*100);fill.style.width=p+"%";percent.textContent=Math.floor(p)+"%";done.textContent=fmt(transferred);
+  if(lastTime){
+   const elapsed=(performance.now()-lastTime)/1000;
+   if(elapsed>=.8){
+    const bps=(transferred-lastBytes)/elapsed;
+    peakBps=Math.max(peakBps,bps);
+    mbps.innerHTML=(bps*8/1e6).toFixed(1)+" <small>Mbps</small>";
+    mbs.innerHTML=(bps/MB).toFixed(1)+" <small>MB/s</small>";
+    peak.innerHTML=(peakBps*8/1e6).toFixed(1)+" <small>Mbps</small>";
+    lastBytes=transferred;lastTime=performance.now();
+   }
+  }
+  if(running&&peakBps>0&&transferred<target){
+   const s=(target-transferred)/peakBps;
+   eta.textContent=s<60?Math.ceil(s)+"s":Math.floor(s/60)+"m "+Math.ceil(s%60)+"s";
+  }else eta.textContent="—";
+ }
+ function url(){
+  const u=new URL(endpoint.value.trim(),location.href);
+  u.searchParams.set("cb",Date.now()+"_"+Math.random().toString(36).slice(2));
+  if(u.hostname==="speed.cloudflare.com"&&u.pathname==="/__down")u.searchParams.set("bytes",String(Number(size.value)*MB));
+  return u.href;
+ }
+ async function wakeLock(){
+  if(!$("wake").checked||!("wakeLock"in navigator))return;
+  try{wake=await navigator.wakeLock.request("screen")}catch(e){}
+ }
+ async function release(){if(wake){try{await wake.release()}catch(e){}wake=null}}
+ async function worker(myGen){
+  active++;refresh();
+  try{
+   while(running&&!paused&&myGen===gen&&transferred<target){
+    const c=new AbortController();controllers.add(c);
+    try{
+     const r=await fetch(url(),{cache:"no-store",credentials:"omit",signal:c.signal});
+     if(!r.ok||!r.body)throw Error("HTTP "+r.status);
+     const reader=r.body.getReader();
+     try{
+      while(running&&!paused&&myGen===gen&&transferred<target){
+       const {value,done:finished}=await reader.read();if(finished)break;if(!value)continue;
+       transferred+=Math.min(value.byteLength,target-transferred);refresh();
+       if(transferred>=target){try{await reader.cancel()}catch(e){}break}
+      }
+     }finally{try{reader.releaseLock()}catch(e){}}
+    }catch(e){
+     if(!running||paused||myGen!==gen)break;
+     log("Connection retry: "+(e.message||"network error"));
+     await new Promise(r=>setTimeout(r,160));
+    }finally{controllers.delete(c)}
+   }
+  }finally{active--;refresh()}
+ }
+ function launch(){
+  const n=Number(threads.value),g=gen;
+  for(let i=active;i<n;i++)worker(g);
+ }
+ async function finish(){
+  running=false;paused=false;gen++;controllers.forEach(c=>c.abort());controllers.clear();active=0;await release();
+  transferred=Math.min(transferred,target);refresh();status.classList.remove("running");statusText.textContent=transferred>=target?"Complete":"Stopped";
+  start.disabled=false;pause.disabled=true;pause.textContent="Pause";
+  if(transferred>=target)log("Target reached — all connections stopped.");
+ }
+ async function begin(){
+  if(running&&paused){paused=false;status.classList.add("running");statusText.textContent="Running";pause.textContent="Pause";await wakeLock();launch();log("Resumed.");return}
+  if(running)return;
+  if(!endpoint.value.trim()){log("Enter an authorized test endpoint.");return}
+  target=targetBytes();running=true;paused=false;gen++;peakBps=0;lastBytes=transferred;lastTime=performance.now();
+  status.classList.add("running");statusText.textContent="Running";start.disabled=true;pause.disabled=false;
+  await wakeLock();launch();log("Started "+threads.value+" parallel connections.");
+  tick();
+ }
+ function tick(){
+  if(!running)return;refresh();
+  if(transferred>=target)finish();else requestAnimationFrame(tick);
+ }
+ async function doPause(){
+  if(!running)return;paused=true;status.classList.remove("running");statusText.textContent="Paused";pause.textContent="Resume";
+  controllers.forEach(c=>c.abort());controllers.clear();await release();log("Paused.");
+ }
+ async function doReset(){
+  gen++;running=false;paused=false;controllers.forEach(c=>c.abort());controllers.clear();active=0;transferred=0;peakBps=0;
+  status.classList.remove("running");statusText.textContent="Ready";start.disabled=false;pause.disabled=true;pause.textContent="Pause";
+  mbps.innerHTML="0 <small>Mbps</small>";mbs.innerHTML="0 <small>MB/s</small>";peak.innerHTML="0 <small>Mbps</small>";await release();refresh();log("Reset.");
+ }
+ document.querySelectorAll(".preset").forEach(b=>b.onclick=()=>{amount.value=b.dataset.v;unit.value=b.dataset.u;refresh()});
+ amount.oninput=refresh;unit.onchange=refresh;
+ start.onclick=begin;pause.onclick=()=>paused?begin():doPause();reset.onclick=doReset;
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&running&&!paused)wakeLock()});
+ window.addEventListener("beforeunload",()=>controllers.forEach(c=>c.abort()));
+ refresh();log("Ready. Use an authorized test endpoint.");
+})();
+</script>
+</body>
+</html>
